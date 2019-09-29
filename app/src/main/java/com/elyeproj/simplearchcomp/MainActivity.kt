@@ -2,6 +2,7 @@ package com.elyeproj.simplearchcomp
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.OnLifecycleEvent
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         viewModel.restoreState(savedInstanceState)
-        viewModel.changeNotifier.observe(this, changeObserver)
+        viewModel.changeRegister.observe(this, changeObserver)
         lifecycle.addObserver(viewModel)
         my_container.setOnClickListener { viewModel.increment() }
     }
@@ -41,7 +42,9 @@ class MainActivity : AppCompatActivity() {
 class MyViewModel(private var count: Int = 0) : ViewModel(), LifecycleObserver {
     companion object { const val COUNT_KEY = "CountKey" }
 
-    val changeNotifier = MutableLiveData<Int>()
+    private val changeNotifier = MutableLiveData<Int>()
+    val changeRegister: LiveData<Int>
+        get() = changeNotifier
 
     fun increment() { changeNotifier.value = ++count }
 
